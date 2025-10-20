@@ -76,6 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+
 # Database Configuration
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
