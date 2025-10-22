@@ -1,10 +1,8 @@
 # backend/core/settings.py
 import sys
 import os
-import dj_database_url
 from pathlib import Path
 from decouple import config
-from datetime import timedelta
 
 # FORÇA UTF-8 ANTES DE TUDO (CRÍTICO!)
 if hasattr(sys.stdout, 'reconfigure'):
@@ -76,34 +74,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database Configuration
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if DATABASE_URL:
-    # Produção (Railway) - usa DATABASE_URL
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+# Database - APENAS UMA VEZ!
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DATABASE_NAME', default='financial_manager'),
+        'USER': config('DATABASE_USER', default='postgres'),
+        'PASSWORD': config('DATABASE_PASSWORD', default='postgres'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+        },
     }
-else:
-    # Desenvolvimento local
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DATABASE_NAME', default='financial_manager'),
-            'USER': config('DATABASE_USER', default='postgres'),
-            'PASSWORD': config('DATABASE_PASSWORD', default='postgres'),
-            'HOST': config('DATABASE_HOST', default='localhost'),
-            'PORT': config('DATABASE_PORT', default='5432'),
-            'OPTIONS': {
-                'client_encoding': 'UTF8',
-            },
-        }
-    }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -158,6 +142,8 @@ REST_FRAMEWORK = {
 }
 
 # JWT Settings
+from datetime import timedelta
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -199,17 +185,4 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
-]
-
-# WhiteNoise para servir arquivos estáticos
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Allowed hosts
-ALLOWED_HOSTS = ['*']  # Em produção, especifique os domínios
-
-# CORS para o frontend
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://financial-manager-front.vercel.app",
 ]

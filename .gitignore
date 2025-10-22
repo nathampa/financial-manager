@@ -1,0 +1,31 @@
+# Claude Code files
+CLAUDE.md
+.claude/
+
+# Backend
+backend/venv/
+backend/.env
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.egg-info/
+backend/db.sqlite3
+backend/staticfiles/
+backend/media/
+
+# Frontend
+frontend/.next/
+frontend/node_modules/
+frontend/.env.local
+frontend/.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
